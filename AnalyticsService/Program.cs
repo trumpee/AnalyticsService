@@ -1,4 +1,7 @@
-﻿using AnalyticsService.Consumers.User;
+﻿using AnalyticsService.Consumers.Notification;
+using AnalyticsService.Consumers.Template;
+using AnalyticsService.Consumers.User;
+using AnalyticsService.Consumers.Validation;
 using AnalyticsService.Extensions;
 using AnalyticsService.Infrastructure.Persistence.Mongo.Abstractions;
 using AnalyticsService.Infrastructure.Persistence.Mongo.Configurations;
@@ -45,6 +48,14 @@ static IHostBuilder CreateHostBuilder(string[] args)
                 x.AddConsumer<UserSignInEventsConsumer>();
                 x.AddConsumer<UserSignUpEventsConsumer>();
                 x.AddConsumer<UserActionEventsConsumer>();
+
+                x.AddConsumer<NotificationCreatedEventsConsumer>();
+
+                x.AddConsumer<TemplateFilledEventsConsumer>();
+                x.AddConsumer<TemplateNotFilledEventsConsumer>();
+
+                x.AddConsumer<ValidationPassedEventsConsumer>();
+                x.AddConsumer<ValidationFailedEventsConsumer>();
             });
 
             rabbitTopologyBuilder.UseExternalConfigurations((ctx, cfg) =>
@@ -52,6 +63,14 @@ static IHostBuilder CreateHostBuilder(string[] args)
                 cfg.AddUserSignInEndpoint(ctx);
                 cfg.AddUserSignUpEndpoint(ctx);
                 cfg.AddUserActionEventsEndpoint(ctx);
+
+                cfg.AddNotificationCreatedEndpoint(ctx);
+
+                cfg.AddTemplateFilledEndpoint(ctx);
+                cfg.AddTemplateNotFilledEndpoint(ctx);
+
+                cfg.AddValidationPassedEndpoint(ctx);
+                cfg.AddValidationFailedEndpoint(ctx);
             });
 
             services.AddConfiguredMassTransit(host.Configuration, rabbitTopologyBuilder);
